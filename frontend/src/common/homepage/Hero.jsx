@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { motion } from "framer-motion";
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
+import legalHelpImage from '../../assets/images/legal-defense.png'; 
 
 const container = (delay) => ({
   hidden: { x: -100, opacity: 0 },
@@ -172,7 +173,7 @@ const Hero = () => {
               scale: 1.05,
               transition: { duration: 0.3 }
             }}
-            src="null"
+            src={legalHelpImage}
             alt="Legal Help"
             className="w-full max-w-xs sm:max-w-sm md:max-w-md object-contain drop-shadow-lg"  />
         </motion.div>
