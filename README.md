@@ -1,229 +1,57 @@
 # AdvocateHub
 
-A comprehensive legal consultation platform that connects clients with qualified advocates for professional legal services.
+A legal consultation platform that connects clients with qualified advocates.
 
-## 🌟 Features
+## Features
 
-### Core Functionality
 - **Role-based Registration**: Separate registration for lawyers and clients
-- **Booking System**: Efficient slot management and appointment scheduling
-- **Admin Approval**: Secure verification process for legal professionals
+- **Booking System**: Slot management and appointment scheduling
 - **Real-time Chat**: In-app communication after confirmed bookings
-- **Dashboard Management**: Personalized dashboards for all user types
+- **Admin Approval**: Secure verification for legal professionals
 
-### User Roles
-- **Clients**: Browse advocates, book consultations, manage appointments
-- **Advocates**: Manage availability, handle client communications
-- **Administrators**: Oversee platform operations and user approvals
-
-## 🏗️ Architecture
+## Quick Start
 
 ### Backend
-- **Framework**: Django with Django REST Framework
-- **Database**: PostgreSQL (production) / SQLite (development)
-- **Authentication**: JWT-based authentication system
-- **API**: RESTful APIs for seamless integration
-
-### Frontend
-- **Framework**: React.js with Vite
-- **Styling**: Tailwind CSS with responsive design
-- **State Management**: React hooks and context
-- **UI Components**: Modern component library with animations
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Python 3.8+
-- Node.js 14+
-- PostgreSQL (for production) or SQLite (for development)
-- Git
-
-### Installation
-
-#### Backend Setup
-1. Clone the repository:
 ```bash
-git clone https://github.com/IshaVats04/AdvocateHub.git
-cd AdvocateHub-main/backend
-```
-
-2. Create and activate virtual environment:
-```bash
+cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-4. Configure environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-5. Run database migrations:
-```bash
 python manage.py migrate
-```
-
-6. Start the development server:
-```bash
 python manage.py runserver
 ```
 
-#### Frontend Setup
-1. Navigate to frontend directory:
+### Frontend
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
-
-3. Start the development server:
-```bash
 npm run dev
 ```
 
-## 📁 Project Structure
-
-```
-AdvocateHub-main/
-├── backend/
-│   ├── advocateshub/          # Main Django application
-│   ├── bookingapi/           # Booking management API
-│   ├── backend/              # Core backend configurations
-│   ├── manage.py             # Django management script
-│   └── requirements.txt      # Python dependencies
-├── frontend/
-│   ├── public/               # Static assets
-│   ├── src/                  # React source code
-│   ├── package.json          # Node.js dependencies
-│   └── vite.config.js        # Vite configuration
-├── .vscode/                  # VS Code configurations
-├── backend/media/            # Media files
-└── README.md                 # This file
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-Create a `.env` file in the backend directory with the following variables:
-
-```env
-# Use SQLite for local development
-USE_SQLITE=True
-
-# Django settings
-DJANGO_SECRET_KEY=your-secret-key-change-in-production
-DEBUG=True
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-
-# CORS settings
-CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
-CSRF_TRUSTED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
-
-# Database settings (for PostgreSQL)
-DB_NAME=your_database_name
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
-DB_HOST=your_database_host
-DB_PORT=5432
-
-# Email settings
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
-```
-
-## 📊 API Documentation
-
-### Authentication Endpoints
-- `POST /api/auth/login/` - User login
-- `POST /api/auth/register/` - User registration
-- `POST /api/auth/logout/` - User logout
-
-### Booking Endpoints
-- `GET /api/bookings/` - List all bookings
-- `POST /api/bookings/` - Create new booking
-- `PUT /api/bookings/{id}/` - Update booking
-- `DELETE /api/bookings/{id}/` - Cancel booking
-
-### Chat Endpoints
-- `GET /api/chat/rooms/` - List chat rooms
-- `POST /api/chat/messages/` - Send message
-- `GET /api/chat/messages/{room_id}/` - Get chat history
-
-## 🎯 Current Status
-
-### Completed Features
-- ✅ Role-based registration (lawyer/client)
-- ✅ Booking and slot management
-- ✅ Admin approval system
-- ✅ In-app chat (only after confirmed booking)
-- ✅ Professional UI with responsive design
-- ✅ JWT authentication
-- ✅ Real-time notifications
-
-### Upcoming Features
-- 🔄 Payment gateway integration
-- 🔄 Video consultation support
-- 🔄 Document sharing system
-- 🔄 Review and rating system
-- 🔄 Mobile application
-
-## 🖥️ Development in VS Code
-
-This project includes VS Code configurations for easy development:
-
-### Using Tasks
-1. Press `Ctrl+Shift+P`
-2. Type "Tasks: Run Task"
-3. Choose "Start Both Servers" to run frontend and backend simultaneously
-
-### Using Debug/Run Panel
-1. Go to "Run and Debug" panel (Ctrl+Shift+D)
-2. Select "Start Full Stack" to run both servers with debugging
-
-### Access URLs
+## Access URLs
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://127.0.0.1:8000
-- **Django Admin**: http://127.0.0.1:8000/admin
+- **Admin Panel**: http://127.0.0.1:8000/admin
 
-## 🤝 Contributing
+## Tech Stack
+- **Frontend**: React.js, Vite, Tailwind CSS
+- **Backend**: Django, Django REST Framework
+- **Database**: SQLite (development) / PostgreSQL (production)
 
+## Project Structure
+```
+AdvocateHub-main/
+├── backend/          # Django application
+├── frontend/         # React application
+└── README.md         # This file
+```
+
+## Contributing
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 Code of Conduct
-
-Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a welcoming environment for all contributors.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-For support and inquiries:
-- Email: support@advocatehub.com
-- GitHub Issues: [Create an issue](https://github.com/IshaVats04/AdvocateHub/issues)
-
-## 🙏 Acknowledgments
-
-- All contributors who have helped build this platform
-- The legal professionals who provided valuable insights
-- The open-source community for the amazing tools and libraries
+2. Create a feature branch
+3. Commit your changes
+4. Open a Pull Request
 
 ---
 
-**Note**: This platform is designed to facilitate legal consultations and does not provide legal advice directly. Users should consult with qualified legal professionals for their specific legal needs.
+**Note**: This platform facilitates legal consultations but does not provide legal advice directly.
