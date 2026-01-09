@@ -110,7 +110,7 @@ const Footer = () => {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <h3 className="font-semibold text-[#ceb571]">Call us at: </h3>
-            <h3 className="text-[#F8F8F5]">0309-XXXXXX</h3>
+            <h3 className="text-[#F8F8F5]">7705958388</h3>
           </motion.div>
           <motion.div
             className='flex flex-row gap-2'
@@ -118,7 +118,7 @@ const Footer = () => {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <h3 className="font-semibold text-[#ceb571]">Email: </h3>
-            <h3 className="text-[#F8F8F5]">contact@advocatehub.com</h3>
+            <h3 className="text-[#F8F8F5]">tusharsingh7705@gmail.com</h3>
           </motion.div>
           <motion.div
             className='flex flex-row gap-2'
@@ -139,7 +139,7 @@ const Footer = () => {
         transition={{ duration: 0.8, delay: 0.5 }}
         viewport={{ once: true }}
       />
-      <p className="text-[#F8F8F5] text-sm text-center pt-2">© 2025 All Rights Reserved</p>
+      <p className="text-[#F8F8F5] text-sm text-center pt-2">© 2026 All Rights Reserved</p>
     </motion.footer>
   );
 };

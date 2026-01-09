@@ -1,0 +1,694 @@
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import Assets from "../../assets/assets.js";
+import { User, LogOut, Home, Briefcase, Calendar, MessageSquare, Settings, User as UserIcon } from 'lucide-react';
+
+const Navbar = () => {
+  const [openProfile, setOpenProfile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, isAuthenticated, isClient, isAdvocate, logout } = useAuth();
+
+  // Handle scroll effect for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
+
+  // Close menus when route changes
+  useEffect(() => {
+    closeAllMenus();
+  }, [location.pathname]);
+
+  const closeAllMenus = () => {
+    setOpenProfile(false);
+    setMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    closeAllMenus();
+  };
+
+  const getInitials = (name) => {
+    if (!name) return '';
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
+  const renderUserAvatar = () => {
+    if (user?.profile_picture) {
+      return (
+        <img 
+          src={user.profile_picture} 
+          alt={user.name || 'User'} 
+          className="w-8 h-8 rounded-full object-cover"
+        />
+      );
+    }
+    
+    return (
+      <div className="w-8 h-8 rounded-full bg-[#aad9d9] text-[#010922] flex items-center justify-center font-semibold">
+        {getInitials(user?.name || 'U')}
+      </div>
+    );
+  };
+
+  // Navigation items for authenticated users
+  const renderAuthNavItems = () => {
+    if (isClient) {
+      return [
+        { to: "/client/dashboard", icon: <Home size={20} />, label: "Dashboard" },
+        { to: "/client/bookings", icon: <Calendar size={20} />, label: "My Bookings" },
+        { to: "/client/messages", icon: <MessageSquare size={20} />, label: "Messages" },
+      ];
+    } else if (isAdvocate) {
+      return [
+        { to: "/advocate/dashboard", icon: <Home size={20} />, label: "Dashboard" },
+        { to: "/advocate/schedule", icon: <Calendar size={20} />, label: "Schedule" },
+        { to: "/advocate/messages", icon: <MessageSquare size={20} />, label: "Messages" },
+      ];
+    }
+    return [];
+  };
+
+  // Navigation items for non-authenticated users
+  const navItems = [
+    { to: "/", label: "Home" },
+    { to: "/advocate-list", label: "Find a Lawyer" },
+    { to: "/#how-it-works", label: "How It Works" },
+    { to: "/#about", label: "About Us" },
+    { to: "/#contact", label: "Contact" },
+  ];
+
+  return (
+    <div className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#010922]/95 backdrop-blur-sm py-2 shadow-lg' : 'bg-transparent py-3'}`}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <div 
+            className="flex items-center cursor-pointer"
+            onClick={() => {
+              navigate("/");
+              closeAllMenus();
+            }}
+          >
+            <img 
+              className="h-10 w-auto" 
+              src={scrolled ? Assets.logoText : Assets.logoTextWhite} 
+              alt="AdvocateHub" 
+            />
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="lg:hidden">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-white focus:outline-none p-2 rounded-md hover:bg-white/10 transition-colors duration-200"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className={`${menuOpen ? 'block' : 'hidden'} lg:flex lg:items-center lg:space-x-8`}>
+            {isAuthenticated ? (
+              // Authenticated user navigation
+              <>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-6 space-y-4 lg:space-y-0 py-4 lg:py-0">
+                  {renderAuthNavItems().map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) =>
+                        `flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-200
+                        ${isActive 
+                          ? 'text-[#aad9d9] bg-white/10' 
+                          : 'text-white hover:text-[#aad9d9] hover:bg-white/5'}`
+                      }
+                      onClick={closeAllMenus}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </NavLink>
+                  ))}
+                </div>
+
+                {/* User Profile Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setOpenProfile(!openProfile)}
+                    className="flex items-center space-x-2 focus:outline-none group"
+                    aria-label="User menu"
+                  >
+                    <div className="relative">
+                      {renderUserAvatar()}
+                      <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-500"></span>
+                    </div>
+                    <span className="hidden lg:inline-block text-white font-medium">
+                      {user?.name || 'Profile'}
+                    </span>
+                    <svg 
+                      className={`w-4 h-4 text-white transition-transform duration-200 ${openProfile ? 'transform rotate-180' : ''}`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {openProfile && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg overflow-hidden z-50">
+                      <div className="py-1">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm text-gray-900 font-medium">{user?.name || 'User'}</p>
+                          <p className="text-xs text-gray-500 truncate">{user?.email || ''}</p>
+                        </div>
+                        
+                        <NavLink
+                          to={isClient ? "/client/profile" : "/advocate/profile"}
+                          className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={closeAllMenus}
+                        >
+                          <UserIcon className="w-4 h-4 mr-3" />
+                          Your Profile
+                        </NavLink>
+                        
+                        {isAdvocate && (
+                          <>
+                            <NavLink
+                              to="/advocate/settings"
+                              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={closeAllMenus}
+                            >
+                              <Settings className="w-4 h-4 mr-3" />
+                              Settings
+                            </NavLink>
+                            <NavLink
+                              to="/advocate/availability"
+                              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={closeAllMenus}
+                            >
+                              <Calendar className="w-4 h-4 mr-3" />
+                              Availability
+                            </NavLink>
+                          </>
+                        )}
+                        
+                        <button
+                          onClick={handleLogout}
+                          className="flex w-full items-center px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100"
+                        >
+                          <LogOut className="w-4 h-4 mr-3" />
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              // Non-authenticated navigation
+              <>
+                <div className="hidden lg:flex items-center space-x-6">
+                  {navItems.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) =>
+                        `text-white hover:text-[#aad9d9] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200
+                        ${isActive ? 'text-[#aad9d9]' : ''}`
+                      }
+                    >
+                      {item.label}
+                    </NavLink>
+                  ))}
+                </div>
+
+                <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mt-4 lg:mt-0">
+                  <NavLink
+                    to="/client/login"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-[#010922] bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#010922] focus:ring-white transition-colors duration-200"
+                    onClick={closeAllMenus}
+                  >
+                    Client Login
+                  </NavLink>
+                  <NavLink
+                    to="/advocate/login"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#aad9d9] hover:bg-[#9ac9c9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#010922] focus:ring-[#aad9d9] transition-colors duration-200"
+                    onClick={closeAllMenus}
+                  >
+                    Lawyer Login
+                  </NavLink>
+                </div>
+              </>
+            )}
+          </div>
+                          }}
+                          className="block px-4 py-3 lg:py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                        >
+                          Manage Slots
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigate("/advocate/dashboard");
+                            closeAllMenus();
+                          }}
+                          className="block px-4 py-3 lg:py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                        >
+                          Dashboard
+                        </button>
+                      </>
+                    )}
+                    
+                    {/* Client-specific menu items */}
+                    {userType === 'client' && (
+                      <button
+                        onClick={() => {
+                          navigate("/client/dashboard");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-3 lg:py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        My Bookings
+                      </button>
+                    )}
+                    
+                    {/* Logout button */}
+              <>
+                {/* CLIENT */}
+                <div className="relative w-full sm:w-auto">
+                  <button
+                    onClick={() => {
+                      setOpenC(!openC);
+                      setOpenA(false);
+                    }}
+                    className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-10 py-2 rounded-md hover:scale-105 transition-transform duration-200 cursor-pointer w-full text-center"
+                  >
+                    CLIENT
+                  </button>
+                  {openC && (
+                    <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] rounded-md shadow-lg z-10 w-full sm:w-36 p-2">
+                      <button
+                        onClick={() => {
+                          navigate("/client/signup");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        SignUp
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/client/login");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ADVOCATE */}
+                <div className="relative w-full sm:w-auto">
+                  <button
+                    onClick={() => {
+                      setOpenA(!openA);
+                      setOpenC(false);
+                    }}
+                    className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-6 py-2 rounded-md cursor-pointer hover:scale-105 transition-transform duration-200 w-full text-center"
+                  >
+                    ADVOCATE
+                  </button>
+                  {openA && (
+                    <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] shadow-lg rounded-md p-2 z-20 w-full sm:w-36">
+                      <button
+                        onClick={() => {
+                          navigate("/advocate/signup");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        SignUp
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/advocate/login");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="lg:hidden bg-[#010922] border-t border-gray-800">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {isAuthenticated ? (
+              // Authenticated mobile menu
+              <>
+                {renderAuthNavItems().map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className="flex items-center px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md"
+                    onClick={closeAllMenus}
+                  >
+                    {item.icon}
+                    <span className="ml-3">{item.label}</span>
+                  </NavLink>
+                ))}
+                <NavLink
+                  to={isClient ? "/client/profile" : "/advocate/profile"}
+                  className="flex items-center px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md"
+                  onClick={closeAllMenus}
+                >
+                  <User className="w-5 h-5" />
+                  <span className="ml-3">Profile</span>
+                </NavLink>
+                {isAdvocate && (
+                  <>
+                    <NavLink
+                      to="/advocate/settings"
+                      className="flex items-center px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md"
+                      onClick={closeAllMenus}
+                    >
+                      <Settings className="w-5 h-5" />
+                      <span className="ml-3">Settings</span>
+                    </NavLink>
+                    <NavLink
+                      to="/advocate/availability"
+                      className="flex items-center px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md"
+                      onClick={closeAllMenus}
+                    >
+                      <Calendar className="w-5 h-5" />
+                      <span className="ml-3">Availability</span>
+                    </NavLink>
+                  </>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-3 py-2 text-base font-medium text-left text-white hover:bg-white/10 rounded-md"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="ml-3">Sign out</span>
+                </button>
+              </>
+            ) : (
+              // Non-authenticated mobile menu
+              <>
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className="block px-3 py-2 text-base font-medium text-white hover:bg-white/10 rounded-md"
+                    onClick={closeAllMenus}
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+                <div className="pt-4 pb-2 border-t border-gray-800">
+                  <NavLink
+                    to="/client/login"
+                    className="block w-full px-4 py-2 mb-3 text-center text-sm font-medium text-[#010922] bg-white rounded-md hover:bg-gray-100"
+                    onClick={closeAllMenus}
+                  >
+                    Client Login
+                  </NavLink>
+                  <NavLink
+                    to="/advocate/login"
+                    className="block w-full px-4 py-2 text-center text-sm font-medium text-white bg-[#aad9d9] rounded-md hover:bg-[#9ac9c9]"
+                    onClick={closeAllMenus}
+                  >
+                    Lawyer Login
+                  </NavLink>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Navbar;
+//   const [openA, setOpenA] = useState(false);
+//   const [menuOpen, setMenuOpen] = useState(false);
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     // Check login status on component mount
+//     const token = localStorage.getItem("access");
+//     setIsLoggedIn(!!token);
+//   }, []);
+
+//   const closeAllMenus = () => {
+//     setOpenC(false);
+//     setOpenA(false);
+//     setMenuOpen(false);
+//   };
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("access");
+//     localStorage.removeItem("refresh");
+//     setIsLoggedIn(false);
+//     navigate("/"); // Redirect to home
+//   };
+
+//   return (
+//     <div className="bg-[#010922] shadow-md px-4 py-3 sm:px-6 lg:px-10 relative z-50">
+//       <div className="flex justify-between items-center">
+//         <div
+//           className="flex items-center gap-2 cursor-pointer"
+//           onClick={() => {
+//             navigate("/");
+//             closeAllMenus();
+//           }}
+//         >
+//           <img className="w-50 mt-2 ml-2" src={Assets.logoText} alt="logo" />
+//           {/* <img className="h-8 mt-4" src={Assets.logoText} alt="text" /> */}
+//         </div>
+
+//         {/* Mobile Menu Button */}
+//         <div className="lg:hidden">
+//           <button
+//             onClick={() => {
+//               setMenuOpen(!menuOpen);
+//               setOpenC(false);
+//               setOpenA(false);
+//             }}
+//             className="text-white focus:outline-none p-2 rounded-md hover:bg-[#6E7582]"
+//           >
+//             <svg
+//               className="w-8 h-8"
+//               fill="none"
+//               stroke="currentColor"
+//               viewBox="0 0 24 24"
+//               xmlns="http://www.w3.org/2000/svg"
+//             >
+//               {menuOpen ? (
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+//               ) : (
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+//               )}
+//             </svg>
+//           </button>
+//         </div>
+
+//         {/* Menu */}
+//         <div
+//           className={`${
+//             menuOpen
+//               ? "block absolute top-full left-0 w-full bg-[#010922] shadow-lg py-4 flex flex-col items-center gap-4 mt-4"
+//               : "hidden"
+//           } lg:flex lg:items-center lg:flex-grow lg:justify-end lg:gap-10 mt-4 sm:mt-0 lg:pr-10`}
+//         >
+//           <ul className="flex flex-col lg:flex-row lg:gap-6 text-[#F8F8F5] text-center w-full lg:w-auto mb-4 lg:mb-0">
+//             <li>
+//               <NavLink
+//                 to="/"
+//                 className="text-xl font-semibold block py-2 px-4 rounded-[10px] hover:bg-[#6E7582] hover:text-[#F8F8F5] transition-colors duration-200"
+//                 onClick={closeAllMenus}
+//               >
+//                 Home
+//               </NavLink>
+//             </li>
+//             <li>
+//               <NavLink
+//                 to="/advocate-list"
+//                 className="text-xl font-semibold block py-2 px-4 rounded-[10px] hover:bg-[#6E7582] hover:text-[#F8F8F5] transition-colors duration-200"
+//                 onClick={closeAllMenus}
+//               >
+//                 Listing
+//               </NavLink>
+//             </li>
+//           </ul>
+
+//           <div className="flex flex-col gap-3 w-full lg:w-auto px-4 lg:px-0 justify-center lg:flex-row lg:gap-4">
+//             {isLoggedIn ? (
+//               // 🔹 If logged in → Logout button
+//               <button
+//                 onClick={handleLogout}
+//                 className="bg-red-500 text-white text-md font-semibold px-6 py-2 rounded-md hover:bg-red-600 transition-transform duration-200 w-full text-center"
+//               >
+//                 Logout
+//               </button>
+//             ) : (
+//               // 🔹 If not logged in → Show Client & Advocate buttons
+//               <>
+//                 {/* CLIENT */}
+//                 <div className="relative w-full sm:w-auto">
+//                   <button
+//                     onClick={() => {
+//                       setOpenC(!openC);
+//                       setOpenA(false);
+//                     }}
+// // <<<<<<< Updated upstream
+//                     className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-10 py-2 rounded-md hover:scale-105 transition-transform duration-200 cursor-pointer w-full text-center"
+//                   >
+//                     CLIENT
+// {/* =======
+//                     className="block px-4 py-2 font-semibold text-center text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                   >
+//                     SignUp
+//                   </button>
+//                   <button
+//                     onClick={() => {
+//                       navigate("/client/login");
+//                       closeAllMenus();
+//                     }}
+//                     className="block px-4 py-2 font-semibold text-center text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                   >
+//                     Login 
+// >>>>>>> Stashed changes */}
+//                   </button>
+//                   {openC && (
+//                     <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] rounded-md shadow-lg z-10 w-full sm:w-36 p-2">
+//                       <button
+//                         onClick={() => {
+//                           navigate("/client/signup");
+//                           closeAllMenus();
+//                         }}
+//                         className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                       >
+//                         SignUp
+//                       </button>
+//                       <button
+//                         onClick={() => {
+//                           navigate("/client/login");
+//                           closeAllMenus();
+//                         }}
+//                         className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                       >
+//                         Login
+//                       </button>
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* ADVOCATE */}
+//                 <div className="relative w-full sm:w-auto">
+//                   <button
+//                     onClick={() => {
+//                       setOpenA(!openA);
+//                       setOpenC(false);
+//                     }}
+// // <<<<<<< Updated upstream
+//                     className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-6 py-2 rounded-md cursor-pointer hover:scale-105 transition-transform duration-200 w-full text-center"
+//                   >
+//                     ADVOCATE
+// {/* =======
+//                     className="block px-4 py-2 font-semibold text-center text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                   >
+//                     SignUp
+//                   </button>
+//                   <button
+//                     onClick={() => {
+//                       navigate("/advocate/signup");
+//                       closeAllMenus();
+//                     }}
+//                     className="block px-4 py-2 font-semibold text-center text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                   >
+//                     SignUp
+//                   </button>
+//                   <button
+//                     onClick={() => {
+//                       navigate("/advocate/login");
+//                       closeAllMenus();
+//                     }}
+//                     className="block px-4 py-2 font-semibold text-center text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                   >
+//                     Login
+// >>>>>>> Stashed changes */}
+//                   </button>
+//                   {openA && (
+//                     <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] shadow-lg rounded-md p-2 z-20 w-full sm:w-36">
+//                       <button
+//                         onClick={() => {
+//                           navigate("/advocate/signup");
+//                           closeAllMenus();
+//                         }}
+//                         className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                       >
+//                         SignUp
+//                       </button>
+//                       <button
+//                         onClick={() => {
+//                           navigate("/advocate/login");
+//                           closeAllMenus();
+//                         }}
+//                         className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+//                       >
+//                         Login
+//                       </button>
+//                     </div>
+//                   )}
+//                 </div>
+//               </>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Navbar;

@@ -60,6 +60,9 @@ const AdvocateLogin = () => {
         return;
       }
 
+      // Notify all components about auth change
+      window.dispatchEvent(new Event('authChange'));
+
       toast.success("Login successful!", {
         position: "top-right",
         autoClose: 3000,

@@ -11,43 +11,30 @@ const Navbar = () => {
   const [userType, setUserType] = useState(null); // 'client' or 'advocate'
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Function to check login status
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem("accessToken");
-      const storedRole = localStorage.getItem("role");
-      
-      // Map roles to userType for navbar
-      let userType = null;
-      if (storedRole === "client") {
-        userType = "client";
-      } else if (storedRole === "lawyer") {
-        userType = "advocate";
-      }
-      
-      // Debug logging
-      console.log("Token:", !!token);
-      console.log("Stored Role:", storedRole);
-      console.log("Mapped User Type:", userType);
-      
-      setIsLoggedIn(!!token);
-      setUserType(userType);
-    };
-
-    // Check login status on component mount
-    checkLoginStatus();
-
-    // Listen for custom login/logout events
-    const handleAuthChange = () => {
-      checkLoginStatus();
-    };
-
-    window.addEventListener('authChanged', handleAuthChange);
+  // Function to update auth state
+  const updateAuthState = () => {
+    const token = localStorage.getItem("accessToken");
+    const role = localStorage.getItem("role");
     
-    // Also listen for storage changes (in case of login from another tab)
+    setIsLoggedIn(!!token);
+    setUserType(role === "client" ? "client" : role === "lawyer" ? "advocate" : null);
+  };
+
+  // Set up event listeners for auth changes
+  useEffect(() => {
+    // Initial check
+    updateAuthState();
+
+    // Listen for auth changes from other components
+    const handleAuthChange = () => {
+      updateAuthState();
+    };
+
+    // Add event listeners - using 'authChanged' to match the dispatched event
+    window.addEventListener('authChanged', handleAuthChange);
     window.addEventListener('storage', handleAuthChange);
 
-    // Cleanup listeners
+    // Cleanup
     return () => {
       window.removeEventListener('authChanged', handleAuthChange);
       window.removeEventListener('storage', handleAuthChange);
@@ -65,14 +52,12 @@ const Navbar = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
-    setIsLoggedIn(false);
-    setUserType(null);
+    
+    // Dispatch event to update all components
+    window.dispatchEvent(new Event('authChange'));
+    
     closeAllMenus();
-    
-    // Dispatch custom event to update navbar across the app
-    window.dispatchEvent(new Event('authChanged'));
-    
-    navigate("/"); // Redirect to home
+    navigate("/");
   };
 
   return (

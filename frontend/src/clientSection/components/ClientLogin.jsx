@@ -97,6 +97,9 @@ const ClientLogin = () => {
         return;
       }
 
+      // Notify all components about auth change
+      window.dispatchEvent(new Event('authChange'));
+
       // ✅ Success toast
       setShowToast(true);
       toast.success(
