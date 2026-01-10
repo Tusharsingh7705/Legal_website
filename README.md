@@ -1,175 +1,103 @@
-# AdvocateHub
+<h1 align="center">⚖️ AdvocateHub</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT">
+  </a>
+  <a href="https://reactjs.org/">
+    <img src="https://img.shields.io/badge/React-18+-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React">
+  </a>
+  <a href="https://www.djangoproject.com/">
+    <img src="https://img.shields.io/badge/Django-4.2+-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django">
+  </a>
+</p>
 
-A comprehensive legal consultation platform that bridges the gap between clients and qualified legal professionals through an intuitive and secure interface.
+<p align="center">
+  <strong>Bridging the gap between clients and legal professionals through a secure, intuitive platform.</strong>
+</p>
 
-## 🚀 Features
+<div align="center">
+  <img src="https://img.shields.io/badge/Real--Time%20Chat-Enabled-brightgreen" alt="Real-time Chat">
+  <img src="https://img.shields.io/badge/Video%20Consultation-Available-blue" alt="Video Consultation">
+  <img src="https://img.shields.io/badge/Secure%20Payments-Integrated-success" alt="Secure Payments">
+</div>
 
-- **Role-based Authentication**
-  - Separate registration flows for lawyers and clients
-  - Email verification for all users
-  - Secure password reset functionality
+---
 
-- **Legal Professional Features**
-  - Profile management with specialization details
-  - Availability calendar
-  - Case management system
-  - Document sharing capabilities
+## ✨ Features
 
-- **Client Features**
-  - Search and filter legal professionals
-  - Book consultations
-  - Secure document upload
-  - Appointment history
+<div align="center">
+  <table>
+    <tr>
+      <td width="50%">
+        <h3>👥 For Clients</h3>
+        <ul>
+          <li>🔍 Find & connect with verified legal experts</li>
+          <li>📅 Book consultations with ease</li>
+          <li>📁 Secure document sharing</li>
+          <li>💬 Real-time chat support</li>
+          <li>📱 Mobile-responsive interface</li>
+        </ul>
+      </td>
+      <td width="50%">
+        <h3>⚖️ For Legal Professionals</h3>
+        <ul>
+          <li>📝 Profile management with verification</li>
+          <li>📅 Calendar & appointment scheduling</li>
+          <li>📊 Case management tools</li>
+          <li>💼 Document management system</li>
+          <li>💳 Secure payment processing</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
 
-- **Core Functionality**
-  - Real-time chat with WebSocket support
-  - Video consultation integration
-  - Secure payment processing
-  - Admin dashboard for user management
-
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
 ### Frontend
-- React.js 18+ with Hooks
-- Vite 4+ for fast development
-- Tailwind CSS 3+ for styling
-- Axios for API requests
-- Socket.IO for real-time features
+<p>
+  <img src="https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white" alt="Axios">
+</p>
 
 ### Backend
-- Python 3.10+
-- Django 4.2+
-- Django REST Framework
-- Django Channels for WebSockets
-- PostgreSQL (production) / SQLite (development)
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white" alt="Django">
+  <img src="https://img.shields.io/badge/Django_REST-ff1709?style=flat&logo=django&logoColor=white" alt="Django REST">
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white" alt="PostgreSQL">
+</p>
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 16+
 - Python 3.10+
-- PostgreSQL (for production)
+- PostgreSQL
 - Git
 
 ### Backend Setup
+```bash
+# Clone the repository
+git clone [https://github.com/Tusharsingh7705/Legal_website.git](https://github.com/Tusharsingh7705/Legal_website.git)
+cd Legal_website/backend
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/AdvocateHub.git
-   cd AdvocateHub/backend
-   ```
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-2. **Set up virtual environment**
-   ```bash
-   # Windows
-   python -m venv venv
-   .\venv\Scripts\activate
-   
-   # macOS/Linux
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+# Install dependencies
+pip install -r requirements.txt
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your configuration
 
-4. **Set up environment variables**
-   Create a `.env` file in the backend directory:
-   ```env
-   DEBUG=True
-   SECRET_KEY=your-secret-key
-   DATABASE_URL=sqlite:///db.sqlite3
-   ALLOWED_HOSTS=localhost,127.0.0.1
-   ```
+# Run migrations
+python manage.py migrate
 
-5. **Run migrations**
-   ```bash
-   python manage.py migrate
-   ```
-
-6. **Create superuser**
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-7. **Run the server**
-   ```bash
-   python manage.py runserver
-   ```
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd ../frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-## 🔗 Access URLs
-
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://127.0.0.1:8000/api/
-- **Admin Panel**: http://127.0.0.1:8000/admin
-- **API Documentation**: http://127.0.0.1:8000/api/docs/
-
-## 🏗 Project Structure
-
-```
-AdvocateHub/
-├── backend/                  # Django backend
-│   ├── core/                # Main app with core functionality
-│   ├── website_feedback/    # User feedback system
-│   ├── videosession/        # Video chat functionality
-│   ├── manage.py            # Django management script
-│   └── requirements.txt     # Python dependencies
-│
-├── frontend/                # React frontend
-│   ├── public/              # Static files
-│   ├── src/                 # Source code
-│   │   ├── components/      # Reusable components
-│   │   ├── pages/           # Page components
-│   │   ├── utils/           # Utility functions
-│   │   └── App.jsx          # Main App component
-│   └── package.json         # Node.js dependencies
-│
-├── .gitignore               # Git ignore file
-├── LICENSE                  # MIT License
-└── README.md                # This file
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📧 Contact
-
-For any inquiries, please open an issue in the repository.
-
----
-
-**Note**: This platform facilitates legal consultations but does not provide legal advice directly.
+# Start development server
+python manage.py runserver
