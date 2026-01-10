@@ -1,0 +1,52 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Source files
+*.js linguist-detectable
+*.jsx linguist-detectable
+*.py linguist-detectable
+*.html linguist-detectable
+*.css linguist-detectable
+*.json linguist-detectable
+*.md linguist-detectable
+
+# Documentation
+README.md linguist-documentation
+CONTRIBUTING.md linguist-documentation
+LICENSE linguist-documentation
+
+# Database
+*.sqlite3 -text
+*.db -text
+
+# Environment files
+.env* -text
+*.env* -text
+
+# Python
+*.py[co] binary
+__pycache__/ -text
+*.py[cod] -text
+*.so -text
+*.egg -text
+*.egg-info/ -text
+
+# Node.js
+node_modules/ -text
+package-lock.json -text
+yarn.lock -text
+
+# Build outputs
+/build/ -text
+/dist/ -text
+*.min.js -text
+*.min.css -text
+
+# System files
+.DS_Store -text
+Thumbs.db -text
+
+# Editor directories and files
+.idea/ -text
+.vscode/ -text
+*.sublime-* -text
